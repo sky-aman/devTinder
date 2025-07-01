@@ -1,13 +1,18 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const cookieParser = require('cookie-parser');
+
 const { validateSignupData } = require('./utils/validation');
 const connectDB = require('./config/database');
 const User = require('./models/user');
+const { userAuth } = require('./middleware/user');
 
 const app = express();
 
 // express middleware to parse request body from readable stream to object
 app.use(express.json());
+// cookie parser for parsing cookies
+app.use(cookieParser());
 
 app.post('/signup', async (req, res) => {
 	try {
@@ -31,8 +36,43 @@ app.post('/signup', async (req, res) => {
 	}
 });
 
+app.post('/login', async (req, res) => {
+	try {
+		const { emailId, password } = req.body;
+
+		const user = await User.findOne({ emailId });
+
+		if (!user) throw new Error('Invalid credentials');
+
+		const isValidPassword = await user.validatePassword(password);
+
+		if (!isValidPassword) throw new Error('Invalid credentials');
+
+		const token = user.getJWT();
+
+		// this will expire on user browser
+		res.cookie('token', token, {
+			expires: new Date(Date.now() + 7 * 24 * 3600000),
+			httpOnly: true,
+		});
+
+		return res.status(200).send('User Login success');
+	} catch (err) {
+		res.status(500).send(err.message);
+	}
+});
+
+// profile API
+app.get('/profile', userAuth, async (req, res) => {
+	try {
+		return res.send(req.user);
+	} catch (err) {
+		return res.status(500).send('Something went wrong');
+	}
+});
+
 // feed API get feed
-app.get('/feed', async (req, res) => {
+app.get('/feed', userAuth, async (req, res) => {
 	const users = await User.find();
 	res.send(users);
 });
