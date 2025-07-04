@@ -3,29 +3,30 @@ const bcrypt = require('bcrypt');
 
 const User = require('../models/user');
 const { validateSignupData } = require('../utils/validation');
+const encryptPassword = require('../utils/encrypt-password');
 
 const authRouter = express.Router();
 
 authRouter.post('/signup', async (req, res) => {
-  try {
-    // validate signup data
-    validateSignupData(req.body);
+	try {
+		// validate signup data
+		validateSignupData(req.body);
 
-    // has password
-    const { firstName, lastName, emailId, password } = req.body;
-    const hashedPassword = await bcrypt.hash(password, 10);
+		// has password
+		const { firstName, lastName, emailId, password } = req.body;
+		const hashedPassword = await encryptPassword(password);
 
-    const user = new User({
-      firstName,
-      lastName,
-      emailId,
-      password: hashedPassword,
-    });
-    await user.save();
-    res.send('User created successfully');
-  } catch (err) {
-    res.status(500).send(err.message);
-  }
+		const user = new User({
+			firstName,
+			lastName,
+			emailId,
+			password: hashedPassword,
+		});
+		await user.save();
+		res.send('User created successfully');
+	} catch (err) {
+		res.status(500).send(err.message);
+	}
 });
 
 authRouter.post('/login', async (req, res) => {
@@ -52,6 +53,14 @@ authRouter.post('/login', async (req, res) => {
   } catch (err) {
     res.status(500).send(err.message);
   }
+});
+
+authRouter.post('/logout', async (req, res) => {
+	return res
+		.cookie('token', null, {
+			expires: new Date(Date.now()),
+		})
+		.send('User logged out');
 });
 
 module.exports = authRouter;
