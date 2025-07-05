@@ -1,21 +1,22 @@
-authRouter
-POST /signup
-POST /login
-POST /logout
+## authRouter
+- POST /signup
+- POST /login
+- POST /logout
 
-profileRouter
-GET /profile
-POST /profile
-PATCH /password
+## profileRouter
+- GET /profile/view
+- PATCH /profile/edit
+- PATCH /profile/password
 
-requestRouter
-POST /request/like/:userId
-POST /request/ignore/:userid
+## connectionRequestRouter
+- POST /request/send/interested/:userId
+- POST /request/send/ignored/:userId
+- POST /request/review/accepted/:requestId
+- POST /request/review/rejected/:requestId
 
-POST /request/accept/:userId
-POST /request/reject/:userId
+## userRouter
+- GET /user/connections
+- GET /user/requests
+- GET /user/feed
 
-userRouter
-GET /user/connections
-GET /user/requests
-GET /user/feed
+Status: ignore, interested, accepted, rejected
