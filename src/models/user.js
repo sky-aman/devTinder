@@ -21,7 +21,7 @@ const userSchema = new Schema(
 			type: String,
 			trim: true,
 			lowercase: true,
-			unique: true,
+			unique: true, // since unique key is available, mongodb will create a index on this field
 			required: true,
 			maxLength: 50,
 			validate: {

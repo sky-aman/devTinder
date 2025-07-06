@@ -16,6 +16,12 @@ const ConnectionRequestSchema = new mongoose.Schema({
   }
 });
 
+// compound index
+ConnectionRequestSchema.index({
+	fromUserId: 1,
+	toUserId: 1,
+});
+
 ConnectionRequestSchema.pre("save", function (next) {
   const connectionData = this;
 
