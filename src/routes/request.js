@@ -78,7 +78,6 @@ requestRouter.post(
 			if (!fromUser) throw new Error('Invalid sender');
 			// there should be an interested connection request from fromUserId
 
-			console.log(fromUserId, toUserId)
 			const connectionRequest = await ConnectionRequest.findOne({
 				fromUserId,
 				toUserId,
