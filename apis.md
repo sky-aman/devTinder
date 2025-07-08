@@ -1,18 +1,16 @@
 ## authRouter
-- POST /signup
-- POST /login
-- POST /logout
+- POST /signup ✅
+- POST /login ✅
+- POST /logout ✅
 
 ## profileRouter
-- GET /profile/view
-- PATCH /profile/edit
-- PATCH /profile/password
+- GET /profile/view ✅
+- PATCH /profile/edit ✅
+- PATCH /profile/password ✅
 
 ## connectionRequestRouter
-- POST /request/send/:status[interested, ignored]/:userId
-
-- POST /request/review/accepted/:requestId
-- POST /request/review/rejected/:requestId
+- POST /request/send/:status[interested, ignored]/:userId ✅
+- POST /request/review/:status[accepted, rejected]/:userId ✅
 
 ## userRouter
 - GET /user/connections

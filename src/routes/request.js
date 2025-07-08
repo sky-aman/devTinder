@@ -60,5 +60,48 @@ requestRouter.post(
 		}
 	}
 );
+// 686736d6b6723ff03e4caf0b
+requestRouter.post(
+	'/request/review/:status/:fromUserId',
+	userAuth,
+	async (req, res) => {
+		try {
+			const fromUserId = req.params.fromUserId;
+			const toUserId = req.user._id;
+			const status = req.params.status;
+
+			const allowedStatus = ['accepted', 'rejected'];
+			// validate status
+			if (!allowedStatus.includes(status)) throw new Error('Invalid status');
+			// check if the toUserId exists
+			const fromUser = await User.findById(fromUserId);
+			if (!fromUser) throw new Error('Invalid sender');
+			// there should be an interested connection request from fromUserId
+
+			console.log(fromUserId, toUserId)
+			const connectionRequest = await ConnectionRequest.findOne({
+				fromUserId,
+				toUserId,
+				status: 'interested',
+			});
+
+			if (!connectionRequest) throw new Error('Request does not exist');
+
+			connectionRequest.status = status;
+
+			// validate if toUserId and fromUserId shouldn't be the same (done in schema pre save)
+			const data = await connectionRequest.save();
+
+			return res.json({
+				message: `${req.user.firstName} ${status} ${fromUser.firstName}`,
+				data,
+			});
+		} catch (err) {
+			return res.status(500).json({
+				message: err.message || 'Something went wrong',
+			});
+		}
+	}
+);
 
 module.exports = requestRouter;
