@@ -13,8 +13,8 @@
 - POST /request/review/:status[accepted, rejected]/:userId ✅
 
 ## userRouter
-- GET /user/connections
-- GET /user/requests
+- GET /user/requests/received ✅
+- GET /user/connections ✅
 - GET /user/feed
 
 Status: ignore, interested, accepted, rejected

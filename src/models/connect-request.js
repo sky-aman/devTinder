@@ -1,19 +1,22 @@
 const mongoose = require('mongoose');
+const User = require('./user');
 
 const ConnectionRequestSchema = new mongoose.Schema({
-  fromUserId: {
-    type: mongoose.Types.ObjectId
-  },
-  toUserId: {
-    type: mongoose.Types.ObjectId,
-  },
-  status: {
-    type: String,
-    enum: {
-      values: ['interested', 'ignored', 'accepted', 'rejected'],
-      message: '{VALUE} is not supported'
-    }
-  }
+	fromUserId: {
+		type: mongoose.Types.ObjectId,
+		ref: User,
+	},
+	toUserId: {
+		type: mongoose.Types.ObjectId,
+		ref: User,
+	},
+	status: {
+		type: String,
+		enum: {
+			values: ['interested', 'ignored', 'accepted', 'rejected'],
+			message: '{VALUE} is not supported',
+		},
+	},
 });
 
 // compound index
