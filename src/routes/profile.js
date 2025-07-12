@@ -11,9 +11,9 @@ const profileRouter = express.Router();
 // profile API
 profileRouter.get('/profile/view', userAuth, async (req, res) => {
 	try {
-		return res.send(req.user);
+		return res.json({ data: req.user });
 	} catch (err) {
-		return res.status(500).send('Something went wrong');
+		return res.status(500).json({ message: 'Something went wrong' });
 	}
 });
 
@@ -30,9 +30,11 @@ profileRouter.patch('/profile/edit', userAuth, async (req, res) => {
 
 		await user.save();
 
-		return res.send('User updated successfully');
+		return res.send({ message: 'User updated successfully' });
 	} catch (err) {
-		return res.status(500).send(err.message || 'Something went wrong');
+		return res
+			.status(500)
+			.json({ message: err.message || 'Something went wrong' });
 	}
 });
 
@@ -54,9 +56,11 @@ profileRouter.patch('/profile/password', userAuth, async (req, res) => {
 		user.password = await encryptPassword(newPassword);
 
 		await user.save();
-		res.status(200).send('Password updated successfully');
+		res.status(200).json({ message: 'Password updated successfully' });
 	} catch (err) {
-		return res.status(500).send(err.message || 'Something went wrong');
+		return res
+			.status(500)
+			.json({ message: err.message || 'Something went wrong' });
 	}
 });
 

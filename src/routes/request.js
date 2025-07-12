@@ -46,7 +46,7 @@ requestRouter.post(
 
 			const requestData = await newConnection.save();
 
-			return res.send({
+			return res.json({
 				message:
 					status === 'interested'
 						? 'Connection request sent.'
@@ -54,13 +54,13 @@ requestRouter.post(
 				data: requestData,
 			});
 		} catch (err) {
-			return res.status(500).send({
+			return res.status(500).json({
 				message: err.message || 'Something went wrong',
 			});
 		}
 	}
 );
-// 686736d6b6723ff03e4caf0b
+
 requestRouter.post(
 	'/request/review/:status/:fromUserId',
 	userAuth,

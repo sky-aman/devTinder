@@ -4,6 +4,8 @@ const ConnectionRequest = require('../models/connect-request');
 
 const userRouter = express.Router();
 
+const SAFE_DATA = ['firstName', 'lastName', 'photoUrl', 'about'];
+
 userRouter.get('/user/requests/received', userAuth, async (req, res) => {
 	const user = req.user;
 
@@ -11,7 +13,7 @@ userRouter.get('/user/requests/received', userAuth, async (req, res) => {
 		const connectionRequests = await ConnectionRequest.find({
 			toUserId: user._id,
 			status: 'interested',
-		}).populate('fromUserId', ['firstName', 'lastName', 'photoUrl', 'about']);
+		}).populate('fromUserId', SAFE_DATA);
 
 		const filteredRequests = connectionRequests.map((request) => ({
 			_id: request._id,
