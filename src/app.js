@@ -1,5 +1,6 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 
 const connectDB = require('./config/database');
 const User = require('./models/user');
@@ -11,6 +12,13 @@ const userRouter = require('./routes/user');
 
 const app = express();
 
+//  handling cors
+app.use(
+	cors({
+		origin: 'http://localhost:5173',
+		credentials: true,
+	})
+);
 // express middleware to parse request body from readable stream to object
 app.use(express.json());
 // cookie parser for parsing cookies

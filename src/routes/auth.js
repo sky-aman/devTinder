@@ -49,7 +49,7 @@ authRouter.post('/login', async (req, res) => {
       httpOnly: true,
     });
 
-    return res.status(200).send('User Login success');
+    return res.status(200).json({ data: user, message: 'User Login success' });
   } catch (err) {
     res.status(500).send(err.message);
   }
