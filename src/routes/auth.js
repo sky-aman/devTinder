@@ -25,7 +25,7 @@ authRouter.post('/signup', async (req, res) => {
 		await user.save();
 		res.send('User created successfully');
 	} catch (err) {
-		res.status(500).send(err.message);
+		res.status(500).json({ mesage: err.message });
 	}
 });
 
@@ -51,7 +51,7 @@ authRouter.post('/login', async (req, res) => {
 
     return res.status(200).json({ data: user, message: 'User Login success' });
   } catch (err) {
-    res.status(500).send(err.message);
+    res.status(500).json({ message: err.message });
   }
 });
 
