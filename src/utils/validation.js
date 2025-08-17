@@ -31,7 +31,15 @@ function validateSignupData (data) {
 }
 
 function validateProfilePatchData(data) {
-	const ALLOWED_FIELDS = ['age', 'gender', 'photoUrl', 'about', 'skills'];
+	const ALLOWED_FIELDS = [
+		'firstName',
+		'lastName',
+		'age',
+		'gender',
+		'photoUrl',
+		'about',
+		'skills',
+	];
 
 	if (Object.keys(data).length === 0) throw new Error('No data is provided');
 
