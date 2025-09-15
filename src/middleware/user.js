@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
+const { TOKEN_SECRET_KEY } = require('../config/config');
 
 const userAuth = async (req, res, next) => {
 	try {
@@ -7,7 +8,7 @@ const userAuth = async (req, res, next) => {
 
 		if (!token) return res.status(401).json({ message: 'Unauthorized' });
 
-		const { _id } = jwt.verify(token, 'DevTinderPrivateKey');
+		const { _id } = jwt.verify(token, TOKEN_SECRET_KEY);
 
 		const user = await User.findById(_id);
 
