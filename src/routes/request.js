@@ -1,13 +1,13 @@
-const express = require('express');
-const { userAuth } = require('../middleware/user');
-const User = require('../models/user');
-const ConnectionRequest = require('../models/connect-request');
+const express = require("express");
+const { userAuth } = require("../middleware/user");
+const User = require("../models/user");
+const ConnectionRequest = require("../models/connect-request");
+const { sendMyEmail } = require("../config/send-email");
 
 const requestRouter = express.Router();
 
-// feed API get feed
 requestRouter.post(
-	'/request/send/:status/:toUserId',
+	"/request/send/:status/:toUserId",
 	userAuth,
 	async (req, res) => {
 		try {
@@ -18,12 +18,12 @@ requestRouter.post(
 			// validate if user is not sending request to himself (in mongoose schmea using 'pre' feature)
 
 			// valid status, only allowed is interested, ignored,
-			const allowedStatus = ['interested', 'ignored'];
-			if (!allowedStatus.includes(status)) throw new Error('Invalid status');
+			const allowedStatus = ["interested", "ignored"];
+			if (!allowedStatus.includes(status)) throw new Error("Invalid status");
 
 			// validate if valid toUserId
 			const toUser = await User.findById(toUserId);
-			if (!toUser) throw new Error('Invalid recepient');
+			if (!toUser) throw new Error("Invalid recepient");
 
 			// user shouldn't be able to send request more than once
 			// send shouldn't abe to send request if he have a request from same toUserId
@@ -35,7 +35,7 @@ requestRouter.post(
 			});
 
 			if (similarRequest) {
-				throw new Error('Similar request already exists');
+				throw new Error("Similar request already exists");
 			}
 
 			const newConnection = new ConnectionRequest({
@@ -46,23 +46,27 @@ requestRouter.post(
 
 			const requestData = await newConnection.save();
 
+			// send dummy email
+			const emailSentResponse = await sendMyEmail();
+			console.log(emailSentResponse);
+
 			return res.json({
 				message:
-					status === 'interested'
-						? 'Connection request sent.'
-						: 'Connection ignored',
+					status === "interested"
+						? "Connection request sent."
+						: "Connection ignored",
 				data: requestData,
 			});
 		} catch (err) {
 			return res.status(500).json({
-				message: err.message || 'Something went wrong',
+				message: err.message || "Something went wrong",
 			});
 		}
 	}
 );
 
 requestRouter.post(
-	'/request/review/:status/:fromUserId',
+	"/request/review/:status/:fromUserId",
 	userAuth,
 	async (req, res) => {
 		try {
@@ -70,21 +74,21 @@ requestRouter.post(
 			const toUserId = req.user._id;
 			const status = req.params.status;
 
-			const allowedStatus = ['accepted', 'rejected'];
+			const allowedStatus = ["accepted", "rejected"];
 			// validate status
-			if (!allowedStatus.includes(status)) throw new Error('Invalid status');
+			if (!allowedStatus.includes(status)) throw new Error("Invalid status");
 			// check if the toUserId exists
 			const fromUser = await User.findById(fromUserId);
-			if (!fromUser) throw new Error('Invalid sender');
+			if (!fromUser) throw new Error("Invalid sender");
 			// there should be an interested connection request from fromUserId
 
 			const connectionRequest = await ConnectionRequest.findOne({
 				fromUserId,
 				toUserId,
-				status: 'interested',
+				status: "interested",
 			});
 
-			if (!connectionRequest) throw new Error('Request does not exist');
+			if (!connectionRequest) throw new Error("Request does not exist");
 
 			connectionRequest.status = status;
 
@@ -97,7 +101,7 @@ requestRouter.post(
 			});
 		} catch (err) {
 			return res.status(500).json({
-				message: err.message || 'Something went wrong',
+				message: err.message || "Something went wrong",
 			});
 		}
 	}

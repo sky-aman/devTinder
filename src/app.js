@@ -1,3 +1,4 @@
+const { createServer } = require("http");
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -10,6 +11,9 @@ const profileRouter = require('./routes/profile');
 const requestRouter = require('./routes/request');
 const userRouter = require('./routes/user');
 const { PORT } = require('./config/config');
+const initializeSocket = require("./utils/socket-io");
+const chatRouter = require("./routes/chat");
+// require("./utils/cron-job");
 
 const app = express();
 
@@ -29,6 +33,7 @@ app.use('/', authRouter);
 app.use('/', profileRouter);
 app.use('/', requestRouter);
 app.use('/', userRouter);
+app.use('/', chatRouter);
 
 app.get('/user', async (req, res) => {
 	try {
@@ -53,11 +58,14 @@ app.use('/', (err, req, res, next) => {
 	return res.status(500).send(err.message || 'Something went wrong');
 });
 
+const server = createServer(app);
+initializeSocket(server);
+
 connectDB()
 	.then(() => {
 		console.log('Database is connected');
 
-		app.listen(PORT, () => {
+		server.listen(PORT, () => {
 			console.log('server is listening on port 7777');
 		});
 	})
