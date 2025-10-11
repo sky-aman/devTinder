@@ -17,4 +17,8 @@
 - GET /user/connections ✅
 - GET /user/feed ✅
 
+## heartbeat
+- POST /heartbeat
+- GET /lastSeen/:id 
+
 Status: ignore, interested, accepted, rejected

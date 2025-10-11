@@ -13,6 +13,7 @@ const userRouter = require('./routes/user');
 const { PORT } = require('./config/config');
 const initializeSocket = require("./utils/socket-io");
 const chatRouter = require("./routes/chat");
+const heartBeatRouter = require("./routes/heartbeat");
 // require("./utils/cron-job");
 
 const app = express();
@@ -34,6 +35,7 @@ app.use('/', profileRouter);
 app.use('/', requestRouter);
 app.use('/', userRouter);
 app.use('/', chatRouter);
+app.use('/', heartBeatRouter);
 
 app.get('/user', async (req, res) => {
 	try {

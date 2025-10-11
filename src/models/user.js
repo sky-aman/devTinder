@@ -68,6 +68,10 @@ const userSchema = new Schema(
 					'Skills can not be more than 5, and Each skill should have length less than 10',
 			},
 		},
+		lastSeen: {
+			type: Date,
+			default: null,
+		}
 	},
 	{
 		timestamps: true,
