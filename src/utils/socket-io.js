@@ -50,8 +50,12 @@ const initializeSocket = (server) => {
 			});
 
 			if (!connectionExist) {
-				console.warn(`Unauthorized chat join attempt by ${userId} → ${targetUserId}`);
-				socket.emit("error", { message: "You are not connected with this user." });
+				console.warn(
+					`Unauthorized chat join attempt by ${userId} → ${targetUserId}`
+				);
+				socket.emit("error", {
+					message: "You are not connected with this user.",
+				});
 				return;
 			}
 
@@ -93,6 +97,20 @@ const initializeSocket = (server) => {
 				},
 				updatedAt: new Date(),
 				text,
+			});
+		});
+
+		socket.on("typing", async ({ userId, targetId }) => {
+			const roomId = getSecretRoomId(userId, targetId);
+			io.to(roomId).emit("userTyping", {
+				userId: targetId,
+			});
+		});
+
+		socket.on("stopTyping", async ({ userId, targetId }) => {
+			const roomId = getSecretRoomId(userId, targetId);
+			io.to(roomId).emit("userStopTyping", {
+				userId: targetId,
 			});
 		});
 
